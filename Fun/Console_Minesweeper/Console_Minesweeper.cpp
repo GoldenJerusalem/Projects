@@ -2,10 +2,69 @@
 //
 
 #include <iostream>
+#include <string>
+#include <array>
+#include <vector>
+#include <locale.h>
+#include <math.h>
+#include <algorithm>
+using namespace std;
 
-int main()
-{
-    std::cout << "Hello World!\n";
+int main() {
+    setlocale(0, "");
+    int k, c;
+    size_t x, y, m, n;
+    cin >> m >> n >> k;
+    vector<vector<int>> field(m, vector<int>(n, 0));
+    vector<array<size_t, 2>> cells1;
+    vector<array<size_t, 2>> cells2;
+    for (int i = 0; i != k; ++i) {
+        cin >> x >> y;
+        field[x - 1][y - 1] = -1;
+    }
+    x = 0, y = 0;
+    for (size_t i = 0; i != m; ++i) {
+        for (size_t j = 0; j != n; ++j) {
+            if (field[i][j] != -1) {
+                cells2.clear();
+                cells1 = {
+                    {i - 1, j - 1},
+                    {i - 1, j},
+                    {i - 1, j + 1},
+                    {i, j - 1},
+                    {i, j + 1},
+                    {i + 1, j - 1},
+                    {i + 1, j},
+                    {i + 1, j + 1}
+                };
+                for (size_t k = 0; k != 8; ++k) {
+                    if (cells1[k][0] < m and cells1[k][1] < n) {
+                        cells2.push_back(cells1[k]);
+                    }
+                }
+                c = 0;
+                for (size_t h = 0; h != cells2.size(); ++h) {
+                    x = cells2[h][0], y = cells2[h][1];
+                    if (field[x][y] == -1) { ++c; }
+                }
+                field[i][j] = c;
+            }
+        }
+    }
+    for (vector<int> line : field) {
+        for (int value : line) {
+            switch (value) {
+            case -1:
+                cout << "* ";
+                break;
+            default:
+                cout << value << ' ';
+            }
+
+        }
+        cout << '\n';
+    }
+    return 0;
 }
 
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
